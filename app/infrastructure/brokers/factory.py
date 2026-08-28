@@ -7,7 +7,6 @@ variables de entorno, manteniendo la aplicación 100% agnóstica al broker.
 
 from app.core.config import settings
 from app.core.events.interfaces import IEventPublisher
-from app.infrastructure.cache.redis_cache import get_redis_cache_client
 from app.infrastructure.brokers.redis_stream import RedisStreamPublisher
 
 

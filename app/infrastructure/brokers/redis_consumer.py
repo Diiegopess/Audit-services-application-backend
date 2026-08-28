@@ -12,7 +12,7 @@ from app.audit.handlers import handle_audit_event
 from app.auth.handlers import handle_user_created_by_admin_event
 from app.core.config import settings
 from app.core.events.base import DomainEvent, EventMetadata
-from app.infrastructure.cache.redis_cache import get_redis_cache_client
+from app.infrastructure.cache.redis import get_redis_client
 from app.infrastructure.db.database import AsyncSessionLocal
 from app.users.handlers import handle_user_registered_event
 
@@ -23,7 +23,7 @@ class RedisStreamConsumer:
     """Consumidor asíncrono para procesar eventos de dominio desde Redis Streams."""
 
     def __init__(self):
-        self.redis: Redis = get_redis_cache_client()
+        self.redis: Redis = get_redis_client()
         self.is_running: bool = False
         self.consumer_name: str = "fastapi_worker_1"
 

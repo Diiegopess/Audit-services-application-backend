@@ -15,11 +15,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiamos solo el archivo de requerimientos para aprovechar el cache de Docker
-COPY requeriments.txt .
+COPY requirements.txt .
 
 # Instalamos las dependencias en una carpeta wheels/ o directamente en el sistema
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requeriments.txt
+    pip install --no-cache-dir -r requirements.txt
 
 
 # ==========================================

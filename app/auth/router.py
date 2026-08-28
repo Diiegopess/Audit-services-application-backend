@@ -5,12 +5,11 @@ Expone las rutas públicas para el registro, inicio de sesión (Local y Google O
 y el cierre de sesión activo (Logout), capturando metadatos de auditoría forense.
 """
 
-import uuid
 from typing import Any
+import uuid
 from fastapi import APIRouter, Depends, status
 import redis.asyncio as redis
 
-from app.api.dependencies import get_current_user_id
 from app.auth.dependencies import get_auth_service, get_event_metadata
 from app.auth.schemas import (
     AuthCredentialResponse,
@@ -22,7 +21,8 @@ from app.auth.schemas import (
 from app.auth.service import AuthService
 from app.core.events.base import EventMetadata
 from app.core.security import create_access_token
-from app.infrastructure.cache.redis_cache import get_redis_cache
+from app.infrastructure.cache.redis import get_redis
+from app.users.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -65,13 +65,11 @@ async def login_local(
         password=credentials.password,
         metadata=metadata,
     )
-    
+
     access_token = create_access_token(
         subject=str(account.id),
         extra_claims={
-
             "email": account.email,
-            
         },
     )
 
@@ -95,7 +93,7 @@ async def login_google(
         token=google_data.id_token,
         metadata=metadata,
     )
-    
+
     access_token = create_access_token(
         subject=str(account.id),
         extra_claims={
@@ -115,10 +113,9 @@ async def login_google(
 )
 async def logout(
     user_id: uuid.UUID = Depends(get_current_user_id),
-    cache_client: redis.Redis = Depends(get_redis_cache),
+    cache_client: redis.Redis = Depends(get_redis),
 ) -> dict[str, str]:
     """
     Endpoint protegido para revocar la sesión activa.
     """
-    # Limpieza o revocación de token/sesión en Redis RAM si aplica
     return {"message": "Sesión cerrada exitosamente."}
